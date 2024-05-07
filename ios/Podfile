@@ -38,3 +38,4 @@ target 'cc_panchal_app' do
     )
   end
 end
+pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'

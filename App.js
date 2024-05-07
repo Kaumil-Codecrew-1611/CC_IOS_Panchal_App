@@ -67,96 +67,24 @@ import api from './src/context/api';
 import { useTranslation, initReactI18next } from 'react-i18next';
 import DropdownAlert, { DropdownAlertProps } from 'react-native-dropdownalert';
 import HardReload from './src/Screens/HardReload';
-
+import { NativeBaseProvider } from 'native-base';
+import { useRoute } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function FirstScreenStack({ navigation }) {
   const { t } = useTranslation();
-
-  useEffect(() => {
-    requestIgnoreBatteryOptimizations();
-    /*   GetFCMToken();
-  
-      PushNotification.configure({
-        onNotification: function (notification) {
-          console.log('Notification received:', notification);
-  
-          if (notification.userInteraction) {
-            const _id = notification.data.newsId || notification.userData.newsId || notification.data._id;
-  
-            const isForeground = notification.foreground;
-  
-            if (isForeground) {
-              console.log('App is in the foreground');
-            } else {
-              navigation.navigate('NewsDetails', { item: _id });
-            }
-  
-            console.log('Notification pressed!', _id);
-          }
-        },
-      });
-  
-  
-  
-      const unsubscribe = messaging().onMessage(async remoteMessage => {
-        console.log(remoteMessage.notification.title)
-        if (remoteMessage.notification.title) {
-          console.log("notification received on unsubscribe ")
-  
-          Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
-        }
-  
-      });
-  
-      return () => {
-        unsubscribe();
-      }; */
-
-
-  }, []);
-  /*   const GetFCMToken = async () => {
-      try {
-        let fcmtoken = await AsyncStorage.getItem("fcmtoken");
-  
-        if (!fcmtoken) {
-          const femtoken = await messaging().getToken();
-          if (femtoken) {
-            await AsyncStorage.setItem("fcmtoken", femtoken);
-          }
-        }
-      } catch (error) {
-        console.log(error, "error in GetFCMToken");
-      }
-    }; */
-
-  const requestIgnoreBatteryOptimizations = async () => {
-    try {
-      // Request necessary permissions
-      if (Platform.OS === "android") {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        } else {
-        }
-      }
-
-    } catch (error) {
-      console.error('Error requesting permission:', error);
-    }
-  };
-
-
+  const route = useRoute();
+  const currentRouteName = route.name;
+  console.log(currentRouteName, " :::currentRouteName", route)
   return (
     <Stack.Navigator
       initialRouteName="HomePage"
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerShown: true,
         headerTitleAlign: 'center',
-        headerTintColor: '#fff',
+        headerTintColor: '#FFF',
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 22,
@@ -164,36 +92,38 @@ function FirstScreenStack({ navigation }) {
         headerStyle: {
           backgroundColor: '#00a9ff',
         },
-      }}>
+        headerLeft: () => {
+          if (navigation.canGoBack()) {
+            return (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  size={30}
+                  color="#FFF"
+                  style={{ marginLeft: 10 }}
+                />
+              </TouchableOpacity>
+            );
+          } else {
+            return (
+              <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <MaterialCommunityIcons
+                  name="menu"
+                  size={30}
+                  color="#fff"
+                  style={{ marginLeft: 10 }}
+                />
+              </TouchableOpacity>
+            );
+          }
+        },
+      })}>
       <Stack.Screen
         name="HomePage"
         component={HomePage}
         options={{
           drawerLabel: 'Home',
-          title: 'શ્રી સવાસો ગોળ પંચાલ સમાજ, અમદાવાદ',
-          headerShown: true,
-          headerTintColor: '#000',
-          headerStyle: {
-            backgroundColor: '#fff',
-          },
-          headerTitleStyle: {
-            fontSize: 19,
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <Image
-                source={require('./src/assets/menubar.png')}
-                alt="menu"
-                style={{
-                  height: 28,
-                  width: 30,
-                  marginRight: 12,
-                  marginLeft: 2,
-                }}
-              />
-            </TouchableOpacity>
-          ),
+          title: currentRouteName === "Home" ? 'શ્રી સવાસો ગોળ પંચાલ સમાજ, અમદાવાદ' : "",
         }}
       />
       <Stack.Screen
@@ -256,13 +186,6 @@ function FirstScreenStack({ navigation }) {
         component={ProfilePage}
         options={{ title: `${t('profile')}` }}
       />
-
-      <Stack.Screen
-        name="EmailRegister"
-        component={EmailRegister}
-        options={{ title: `${t('profile')}` }}
-      />
-
       <Stack.Screen
         name="ContactUs"
         component={ContactUs}
@@ -312,11 +235,6 @@ function FirstScreenStack({ navigation }) {
         options={{ title: `${t('editFamilyDetails')}` }}
       />
       <Stack.Screen
-        name="TestPage"
-        component={TestPage}
-        options={{ title: 'Its a Testing Page' }}
-      />
-      <Stack.Screen
         name="SettingsScreen"
         component={SettingsScreen}
         options={{ title: `${t('settings')}` }}
@@ -335,11 +253,6 @@ function FirstScreenStack({ navigation }) {
         name="MaintenanceScreen"
         component={MaintenanceScreen}
         options={{ title: `${t('maintenanceScreen')}` }}
-      />
-      <Stack.Screen
-        name="HardReload"
-        component={HardReload}
-        options={{ title: "Loading" }}
       />
     </Stack.Navigator>
   );
@@ -454,121 +367,123 @@ function App() {
   //////////////////////////////////////////////////////////////////////////////////////////
 
   return (
-    <NavigationContainer>
-      {isConnected ? (
-        <Drawer.Navigator
-          screenOptions={{
-            drawerStyle: { width: '75%', paddingTop: 20 },
-          }}
-          drawerContent={props => <CustomSidebarMenu {...props} />}>
-          <Drawer.Screen
-            name="Home"
-            component={FirstScreenStack}
-            options={{
-              headerShown: false,
-              title: 'Login',
-              drawerLabel: ({ focused, color }) => (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <View
-                    style={{
-                      flexBasis: '15%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingLeft: 8,
-                    }}>
-                    <MaterialCommunityIcons
-                      name="home"
-                      color={focused ? color : '#666'}
-                      size={30}
-                    />
-                  </View>
-                  <Text
-                    style={{
-                      marginLeft: 23,
-                      fontSize: 19,
-                      fontWeight: '600',
-                      color: focused ? color : '#666',
-                      flexBasis: '80%',
-                    }}>
-                    {t('home')}
-                  </Text>
-                </View>
-              ),
+    <NativeBaseProvider>
+      <NavigationContainer>
+        {isConnected ? (
+          <Drawer.Navigator
+            screenOptions={{
+              drawerStyle: { width: '75%', paddingTop: 20 },
             }}
-          />
-        </Drawer.Navigator>
-      ) : (
-        <CheckConnection />
-      )}
-      <Toast config={toastConfig} />
+            drawerContent={props => <CustomSidebarMenu {...props} />}>
+            <Drawer.Screen
+              name="Home"
+              component={FirstScreenStack}
+              options={{
+                headerShown: false,
+                title: 'Login',
+                drawerLabel: ({ focused, color }) => (
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View
+                      style={{
+                        flexBasis: '15%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingLeft: 8,
+                      }}>
+                      <MaterialCommunityIcons
+                        name="home"
+                        color={focused ? color : '#666'}
+                        size={30}
+                      />
+                    </View>
+                    <Text
+                      style={{
+                        marginLeft: 23,
+                        fontSize: 19,
+                        fontWeight: '600',
+                        color: focused ? color : '#666',
+                        flexBasis: '80%',
+                      }}>
+                      {t('home')}
+                    </Text>
+                  </View>
+                ),
+              }}
+            />
+          </Drawer.Navigator>
+        ) : (
+          <CheckConnection />
+        )}
+        <Toast config={toastConfig} />
 
-      {showInstructions && (
-        <Modal visible={showInstructions} animationType="slide">
-          <ScrollView>
-            <View style={styles.container}>
-              <View style={styles.imageContainer}>
-                <Image
-                  source={require('./src/assets/panchal.png')}
-                  style={{ height: 150, width: 150 }}
-                />
+        {showInstructions && (
+          <Modal visible={showInstructions} animationType="slide">
+            <ScrollView>
+              <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={require('./src/assets/panchal.png')}
+                    style={{ height: 150, width: 150 }}
+                  />
 
-                <Text style={[styles.text, { fontWeight: 'bold' }]}>
-                  શ્રી સવાસો ગોળ પંચાલ સમાજ, અમદાવાદ
-                </Text>
-              </View>
-
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>
-                  એપ્લિકેશન નો ઉપયોગ કેવી રીતે કરવો ?
-                </Text>
-
-                <View>
-                  <Text style={styles.text}>
-                    <Text style={styles.stepText}>સ્ટેપ 1 :</Text> ઘર ના મુખ્ય
-                    વ્યક્તિ નું રજીસ્ટ્રેશન કરો.
+                  <Text style={[styles.text, { fontWeight: 'bold' }]}>
+                    શ્રી સવાસો ગોળ પંચાલ સમાજ, અમદાવાદ
                   </Text>
-
-                  <Text style={styles.text}>
-                    <Text style={styles.stepText}>સ્ટેપ 1 :</Text> પેમેન્ટ પૂર્ણ
-                    કરો.
-                  </Text>
-
-                  <Text style={styles.text}>
-                    <Text style={styles.stepText}>સ્ટેપ 3 :</Text> ત્યારબાદ ઉપર
-                    ડાબી બાજુએ ત્રણ લાઈન ઉપર ક્લિક કરો પછી લૉગિન ઉપર ક્લિક કરો .
-                  </Text>
-
-                  <Text style={styles.text}>
-                    <Text style={styles.stepText}>સ્ટેપ 4 :</Text> તમારો નંબર અને
-                    પાસવર્ડ નાખીને લૉગિન કરો .
-                  </Text>
-
-                  <Text style={styles.text}>
-                    <Text style={styles.stepText}>સ્ટેપ 5 :</Text> ત્યારબાદ ફરી
-                    ત્રણ લાઈન ઉપર ક્લિક કરી ને પ્રોફાઈલ ઉપર ક્લિક કરો.
-                  </Text>
-
-                  <Text style={styles.text}>
-                    <Text style={styles.stepText}>સ્ટેપ 6 :</Text> ત્યારબાદ નીચે "
-                    Family Members " ઉપર ક્લિક કરી ને પરિવાર ના સભ્યો નું
-                    રજિસ્ટ્રેશન કરો.
-                  </Text>
-
-                  <Text style={styles.text}></Text>
-
-                  <Text style={styles.text}>આભાર. 🙏</Text>
                 </View>
-              </View>
-              <TouchableOpacity onPress={handleInstructionsDismiss}>
-                <View style={styles.btn}>
-                  <Text style={styles.btnText}> આગળ વધો. </Text>
+
+                <View style={styles.textContainer}>
+                  <Text style={styles.title}>
+                    એપ્લિકેશન નો ઉપયોગ કેવી રીતે કરવો ?
+                  </Text>
+
+                  <View>
+                    <Text style={styles.text}>
+                      <Text style={styles.stepText}>સ્ટેપ 1 :</Text> ઘર ના મુખ્ય
+                      વ્યક્તિ નું રજીસ્ટ્રેશન કરો.
+                    </Text>
+
+                    <Text style={styles.text}>
+                      <Text style={styles.stepText}>સ્ટેપ 1 :</Text> પેમેન્ટ પૂર્ણ
+                      કરો.
+                    </Text>
+
+                    <Text style={styles.text}>
+                      <Text style={styles.stepText}>સ્ટેપ 3 :</Text> ત્યારબાદ ઉપર
+                      ડાબી બાજુએ ત્રણ લાઈન ઉપર ક્લિક કરો પછી લૉગિન ઉપર ક્લિક કરો .
+                    </Text>
+
+                    <Text style={styles.text}>
+                      <Text style={styles.stepText}>સ્ટેપ 4 :</Text> તમારો નંબર અને
+                      પાસવર્ડ નાખીને લૉગિન કરો .
+                    </Text>
+
+                    <Text style={styles.text}>
+                      <Text style={styles.stepText}>સ્ટેપ 5 :</Text> ત્યારબાદ ફરી
+                      ત્રણ લાઈન ઉપર ક્લિક કરી ને પ્રોફાઈલ ઉપર ક્લિક કરો.
+                    </Text>
+
+                    <Text style={styles.text}>
+                      <Text style={styles.stepText}>સ્ટેપ 6 :</Text> ત્યારબાદ નીચે "
+                      Family Members " ઉપર ક્લિક કરી ને પરિવાર ના સભ્યો નું
+                      રજિસ્ટ્રેશન કરો.
+                    </Text>
+
+                    <Text style={styles.text}></Text>
+
+                    <Text style={styles.text}>આભાર. 🙏</Text>
+                  </View>
                 </View>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </Modal>
-      )}
-    </NavigationContainer>
+                <TouchableOpacity onPress={handleInstructionsDismiss}>
+                  <View style={styles.btn}>
+                    <Text style={styles.btnText}> આગળ વધો. </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </Modal>
+        )}
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 }
 

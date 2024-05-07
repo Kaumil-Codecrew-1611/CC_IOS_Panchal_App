@@ -35,7 +35,9 @@ export default function LoginScreen({ navigation }) {
   const { t } = useTranslation();
 
   useEffect(() => {
-    GetFCMToken();
+    if (Platform.OS === 'android') {
+      GetFCMToken();
+    }
   }, [])
 
   const GetFCMToken = async () => {
@@ -161,13 +163,13 @@ export default function LoginScreen({ navigation }) {
                 activeOpacity={0.6}>
                 <Text style={styles.loginText}>{t('submit')}</Text>
               </TouchableOpacity>
-              
+
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text>New user? Register</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('FirstForm')}>
-                  <Text style={{ color: '#036bfc' }}> {t('register')}</Text>
-                </TouchableOpacity>
+              <Text>New user? Register</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('FirstForm')}>
+                <Text style={{ color: '#036bfc' }}> {t('register')}</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

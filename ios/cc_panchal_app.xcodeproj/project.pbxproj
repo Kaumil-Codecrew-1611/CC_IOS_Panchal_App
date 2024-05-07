@@ -11,6 +11,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		45754CC02BE8E83D007E799D /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 45754CBE2BE8E829007E799D /* assets */; };
+		457F3EB12BE8AA7200C7C1C3 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 457F3EB02BE8AA7200C7C1C3 /* main.jsbundle */; };
 		72B72BA15B77F753F7EECA74 /* libPods-cc_panchal_app-cc_panchal_appTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E04140ECBE3CC409E07E7E5A /* libPods-cc_panchal_app-cc_panchal_appTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		973C493C14C20D29D193E339 /* libPods-cc_panchal_app.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25FAEDCDEA5DFEEE22190C21 /* libPods-cc_panchal_app.a */; };
@@ -41,6 +43,8 @@
 		25FAEDCDEA5DFEEE22190C21 /* libPods-cc_panchal_app.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cc_panchal_app.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE81DD55EA541A521138236 /* Pods-cc_panchal_app-cc_panchal_appTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cc_panchal_app-cc_panchal_appTests.release.xcconfig"; path = "Target Support Files/Pods-cc_panchal_app-cc_panchal_appTests/Pods-cc_panchal_app-cc_panchal_appTests.release.xcconfig"; sourceTree = "<group>"; };
 		3FAE9197C9CB126905F961C2 /* Pods-cc_panchal_app-cc_panchal_appTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cc_panchal_app-cc_panchal_appTests.debug.xcconfig"; path = "Target Support Files/Pods-cc_panchal_app-cc_panchal_appTests/Pods-cc_panchal_app-cc_panchal_appTests.debug.xcconfig"; sourceTree = "<group>"; };
+		45754CBE2BE8E829007E799D /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
+		457F3EB02BE8AA7200C7C1C3 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = cc_panchal_app/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A19170878118B8A5052D9CFB /* Pods-cc_panchal_app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cc_panchal_app.release.xcconfig"; path = "Target Support Files/Pods-cc_panchal_app/Pods-cc_panchal_app.release.xcconfig"; sourceTree = "<group>"; };
 		E04140ECBE3CC409E07E7E5A /* libPods-cc_panchal_app-cc_panchal_appTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cc_panchal_app-cc_panchal_appTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +91,8 @@
 		13B07FAE1A68108700A75B9A /* cc_panchal_app */ = {
 			isa = PBXGroup;
 			children = (
+				45754CBE2BE8E829007E799D /* assets */,
+				457F3EB02BE8AA7200C7C1C3 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -243,6 +249,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45754CC02BE8E83D007E799D /* assets in Resources */,
+				457F3EB12BE8AA7200C7C1C3 /* main.jsbundle in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);

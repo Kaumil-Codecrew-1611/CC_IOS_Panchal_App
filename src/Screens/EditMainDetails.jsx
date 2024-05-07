@@ -15,29 +15,23 @@ import {
 } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import { showToast } from '../component/CustomToast';
-import api from '../context/api';
-import CustomPersonStatusDropdown from '../component/CustomPersonStatusDropdown';
+import api from '../utils/api';
 import { Radio } from 'native-base';
-const CustomDateField = props => {
-  return (
-    <View style={styles.dateFieldContainer}>
-      <DateField {...props} />
-    </View>
-  );
-};
+import CustomPersonStatusDropdown from '../component/CustomPersonStatusDropdown';
 
-const RegisterForm = ({ route }) => {
-  const { locations_id } = route.params;
+
+
+const EditMainDetails = ({ route }) => {
+  const { mainId } = route.params;
+
   const navigation = useNavigation();
 
   const [firstname, setFirstname] = useState('');
-  const [lastname, setSurName] = useState('')
   const [middlename, setMiddlename] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setemail] = useState('')
+  const [lastname, setLastname] = useState('');
   const [dob, setDob] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
-  const [mobile_number, setMobileNumber] = useState('');
+  // const [mobile_number, setMobile_number] = useState('');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [pincode, setPincode] = useState('');
@@ -48,26 +42,19 @@ const RegisterForm = ({ route }) => {
   const [marital_status, setMaritalStatus] = useState('');
 
   const [firstnameError, setfirstnameError] = useState('');
-  const [surnameError, setsurnameError] = useState('');
   const [middlenameError, setmiddlenameError] = useState('');
-  const [emailError, setemailError] = useState('')
-
+  const [lastnameError, setlastnameError] = useState('');
   const [dobError, setdobError] = useState('');
-  const [mobile_numberError, setmobile_numberError] = useState('');
+  // const [mobile_numberError, setmobile_numberError] = useState('');
   const [stateError, setstateError] = useState('');
   const [cityError, setcityError] = useState('');
   const [pincodeError, setpincodeError] = useState('');
   const [educationError, seteducationError] = useState('');
   const [addressError, setaddressError] = useState('');
   const [jobError, setjobError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
   const [genderError, setgenderError] = useState('');
   const [maritalStatusError, setMaritalStatusError] = useState('');
-  const [fcmtoken, setFcmtoken] = useState('');
-
-  const [userData, setUserData] = useState(null);
   const { t } = useTranslation();
-
   const initialLabel = t('maritalstatus');
   const married = t('married');
   const unmarried = t('unmarried');
@@ -88,12 +75,8 @@ const RegisterForm = ({ route }) => {
     return formattedDate.toLocaleDateString(undefined, options);
   };
 
-  const handleRegister = async text => {
-    const expectedPasswordPattern =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
-
+  const handleUpdate = async () => {
     let isValid = true;
-
     if (!firstname) {
       setfirstnameError(t('pleaseenterfirstname'));
       isValid = false;
@@ -102,10 +85,10 @@ const RegisterForm = ({ route }) => {
     }
 
     if (!lastname) {
-      setsurnameError(t('please enter surname'));
+      setlastnameError(t('pleaseenterlastname'));
       isValid = false;
     } else {
-      setsurnameError('');
+      setlastnameError('');
     }
 
     if (!middlename) {
@@ -115,55 +98,37 @@ const RegisterForm = ({ route }) => {
       setmiddlenameError('');
     }
 
-    if (!email) {
-      setemailError(t('please enter middlename'));
-      isValid = false;
-    } else {
-      setemailError('');
-    }
-
-
-    if (!password) {
-      setPasswordError(t('pleaseenterpassword'));
-      isValid = false;
-    } else if (password.length < 6) {
-      setPasswordError(t('passwordmusthaveatleastcharacters'));
-      isValid = false;
-    } else if (!expectedPasswordPattern.test(password)) {
-      setPasswordError(
-        t('passwordmusthaveatleastoneletteronenumberandonespecialcharacter'),
-      );
-      isValid = false;
-    } else {
-      setPasswordError('');
-    }
     if (!dob) {
       setdobError(t('pleaseenterdob'));
       isValid = false;
     } else {
       setdobError('');
     }
-    if (!mobile_number) {
-      setmobile_numberError(t('pleaseentermobilenumber'));
-      isValid = false;
-    } else if (isNaN(mobile_number) || mobile_number.length !== 10) {
-      setmobile_numberError(t('pleaseenteravalidmobilenumber'));
-      isValid = false;
-    } else {
-      setmobile_numberError('');
-    }
+
+    // if (!mobile_number) {
+    //   setmobile_numberError('Please enter mobile number.');
+    //   isValid = false;
+    // } else if (isNaN(mobile_number) || mobile_number.length !== 10) {
+    //   setmobile_numberError('Please enter a valid mobile number');
+    //   isValid = false;
+    // } else {
+    //   setmobile_numberError('');
+    // }
+
     if (!state) {
       setstateError(t('pleaseenterstate'));
       isValid = false;
     } else {
       setstateError('');
     }
+
     if (!city) {
       setcityError(t('pleaseentercity'));
       isValid = false;
     } else {
       setcityError('');
     }
+
     if (!pincode) {
       setpincodeError(t('pleaseenterpincode'));
       isValid = false;
@@ -173,30 +138,35 @@ const RegisterForm = ({ route }) => {
     } else {
       setpincodeError('');
     }
+
     if (!education) {
       seteducationError(t('pleaseentereducation'));
       isValid = false;
     } else {
       seteducationError('');
     }
+
     if (!address) {
       setaddressError(t('pleaseenteraddress'));
       isValid = false;
     } else {
       setaddressError('');
     }
+
     if (!job) {
       setjobError(t('pleaseenterjob'));
       isValid = false;
     } else {
       setjobError('');
     }
+
     if (!gender) {
       setgenderError(t('pleaseentergender'));
       isValid = false;
     } else {
       setgenderError('');
     }
+
     if (!marital_status) {
       setMaritalStatusError(t('pleasechoosemaritalstatus'));
       isValid = false;
@@ -205,83 +175,43 @@ const RegisterForm = ({ route }) => {
     }
 
     if (isValid) {
-      const userData = new FormData();
-      console.log(userData, "userData")
-      userData.append('firstname', firstname);
-      userData.append('middlename', middlename);
-      userData.append('middlename', lastname);
-      userData.append('locations_id', locations_id);
-      userData.append('dob', dob);
-      userData.append('mobile_number', mobile_number);
-      userData.append('password', password);
-      userData.append('state', state);
-      userData.append('city', city);
-      userData.append('pincode', pincode);
-      userData.append('gender', gender);
-      userData.append('education', education);
-      userData.append('address', address);
-      userData.append('job', job);
-      userData.append('marital_status', marital_status);
-      userData.append('fcmtoken', fcmtoken);
-
+      const Updatedata = {
+        firstname,
+        middlename,
+        lastname,
+        dob,
+        // mobile_number,
+        state,
+        city,
+        pincode,
+        address,
+        gender,
+        education,
+        job,
+        marital_status,
+      };
       try {
-        const PerentsData = {
-          firstname: firstname,
-          middlename: middlename,
-          lastname: lastname,
-          locations_id: locations_id,
-          dob: dob,
-          email: email,
-          mobile_number: mobile_number,
-          password: password,
-          state: state,
-          city: city,
-          pincode: pincode,
-          gender: gender,
-          education: education,
-          address: address,
-          job: job,
-          marital_status: marital_status,
-          device_token: fcmtoken,
-          payment_id: null,
-        }
-        console.log(PerentsData, "PerentsData")
 
-        const response = await api.post(`/check_mobile`, { mobile_number: mobile_number, })
-        console.log(response.data, "check_mobile")
-        if (response.data.mobileError === 'Mobile number already register') {
-          showToast(
-            'error',
-            t('mobilenumberisalreadyregistered'),
-            2500,
-          );
+        const response = await api.post(`user-update/${mainId}`, Updatedata);
+
+        if (response.status === 200) {
+          const data = response.data;
+          AsyncStorage.removeItem('userData').then(() => {
+            const userData = JSON.stringify(response.data);
+            AsyncStorage.setItem('userData', userData);
+            navigation.navigate('HomePage');
+            navigation.navigate('ProfilePage');
+            showToast(
+              'success',
+              t('dataupdatedsuccessfully'),
+              2500,
+            );
+          });
         } else {
-          AsyncStorage.setItem('PerentsData', JSON.stringify(PerentsData));
-          setFirstname('');
-          setSurName('');
-          setemail('');
-          setMiddlename('');
-          setPassword('');
-          setDob(null);
-          setShowPicker(false);
-          setMobileNumber('');
-          setState('');
-          setCity('');
-          setPincode('');
-          setGender('');
-          setEducation('');
-          setAddress('');
-          setJob('');
-          setMaritalStatus('');
-          navigation.navigate('PaymentPage');
+          console.log('user-update Request failed with status:', response.status);
         }
-
       } catch (error) {
-        if (error.response) {
-          console.log('Status code:', error.response);
-        } else {
-          console.error('Error:', error.message);
-        }
+        console.log(error);
       }
     } else {
       showToast(
@@ -293,40 +223,47 @@ const RegisterForm = ({ route }) => {
   };
 
   useEffect(() => {
-    const dataaa = AsyncStorage.getItem('userData');
-    GetFCMToken()
-    showToast(
-      'info',
-      t('registerthemainmemberofthehouse'),
-      6000,
-    );
+    fetchData();
   }, []);
-  const GetFCMToken = async () => {
-    try {
-      let fcmtoken = await AsyncStorage.getItem("fcmtoken");
-      setFcmtoken(fcmtoken)
 
-      if (!fcmtoken) {
-        const femtoken = await messaging().getToken();
-        if (femtoken) {
-          console.log(femtoken, "new token");
-          setFcmtoken(fcmtoken)
-          await AsyncStorage.setItem("fcmtoken", femtoken);
-        }
+  const fetchData = async () => {
+    try {
+
+      const response = await api.get(`user-edit/${mainId}`);
+
+      if (response.status === 200) {
+        const data = response.data;
+        setFirstname(data.firstname);
+        // setMobile_number(data.mobile_number);
+        setMiddlename(data.middlename);
+        setLastname(data.lastname);
+        setState(data.state);
+        setCity(data.city);
+        setPincode(data.pincode);
+        setAddress(data.address);
+        setDob(new Date(data.dob));
+        setEducation(data.education);
+        setJob(data.job);
+        setGender(data.gender);
+        setMaritalStatus(data.marital_status);
+      } else {
+        console.log('user-edit Request failed with status:', response.status);
       }
     } catch (error) {
-      console.log(error, "error in GetFCMToken");
+      console.error('An error occurred:', error);
     }
   };
   const getSelectedvalue = (selected_maritalstatus) => {
     setMaritalStatus(selected_maritalstatus);
   }
   return (
-    <ImageBackground source={require('../assets/bg3.jpg')} style={{ flex: 1 }} resizeMode="cover" >
+    <ImageBackground source={require('../assets/bg3.jpg')} style={styles.container}>
+
+      {/* <Text style={styles.title}>Register Form</Text> */}
+
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.childContainer}>
           <View>
-
             <TextInput
               placeholderTextColor="gray"
               style={[
@@ -338,63 +275,35 @@ const RegisterForm = ({ route }) => {
               onChangeText={setFirstname}
             />
             {firstnameError && (
-              <Text style={styles.error}>{firstnameError}</Text>
+              <Text style={styles.errorText}>{firstnameError}</Text>
             )}
 
-            <TextInput
-              placeholderTextColor="gray"
-              style={[
-                styles.input, {
-                  shadowColor: middlenameError ? '#ff0000' : 'gray'
-                },
-              ]}
-              placeholder={t('middlename')}
-              defaultValue={middlename}
-              onChangeText={setMiddlename}
-            />
-            {middlenameError && (
-              <Text style={styles.error}>{middlenameError}</Text>
-            )}
-            <TextInput
-              placeholderTextColor="gray"
-              style={[
-                styles.input, {
-                  shadowColor: surnameError ? '#ff0000' : 'gray'
-                },
-              ]}
-              placeholder={t('Sur Name')}
-              value={lastname}
-              onChangeText={setSurName}
-            />
-            {surnameError && (
-              <Text style={styles.error}>{surnameError}</Text>
-            )}
-            {/* Email field */}
             <TextInput
               placeholderTextColor="gray"
               style={[
                 styles.input,
-                { shadowColor: emailError ? '#ff0000' : 'gray' },
+                { shadowColor: middlenameError ? '#ff0000' : 'gray' },
               ]}
-              placeholder={t('Email')}
-              value={email}
-              onChangeText={setemail}
+              placeholder={t('middlename')}
+              value={middlename}
+              onChangeText={setMiddlename}
             />
-            {emailError && <Text style={styles.errorText}>{emailError}</Text>}
-          </View>
+            {middlenameError && (
+              <Text style={styles.errorText}>{middlenameError}</Text>
+            )}
 
-          <TextInput
-            style={[
-              styles.input,
-              { shadowColor: passwordError ? '#ff0000' : 'gray' },
-            ]}
-            placeholder={t('password')}
-            placeholderTextColor="gray"
-            // secureTextEntry={true}
-            onChangeText={setPassword}
-            value={password}
-          />
-          {passwordError && <Text style={styles.error}>{passwordError}</Text>}
+            <TextInput
+              placeholderTextColor="gray"
+              style={[
+                styles.input,
+                { shadowColor: lastnameError ? '#ff0000' : 'gray' },
+              ]}
+              placeholder={t('lastname')}
+              value={lastname}
+              onChangeText={setLastname}
+            />
+            {lastnameError && <Text style={styles.errorText}>{lastnameError}</Text>}
+          </View>
 
           <View>
             <Pressable onPress={() => setShowPicker(true)}>
@@ -409,7 +318,7 @@ const RegisterForm = ({ route }) => {
                 value={dob ? formatDate(dob) : ''}
               />
             </Pressable>
-            {dobError && <Text style={styles.error}>{dobError}</Text>}
+            {dobError && <Text style={styles.errorText}>{dobError}</Text>}
 
             {showPicker && (
               <DateTimePicker
@@ -423,21 +332,20 @@ const RegisterForm = ({ route }) => {
           </View>
 
           <View>
-            <TextInput
+            {/* <TextInput
               placeholderTextColor="gray"
               style={[
                 styles.input,
-                { shadowColor: mobile_numberError ? '#ff0000' : 'gray' },
+                {borderColor: mobile_numberError ? '#ff0000' : 'gray'},
               ]}
-              placeholder={t('mobile')}
-              value={mobile_number}
-              onChangeText={setMobileNumber}
-              maxLength={10}
+              placeholder="Mobile Number / મોબાઇલ નંબર"
+              value={`${mobile_number}`}
+              onChangeText={setMobile_number}
               keyboardType="numeric"
             />
             {mobile_numberError && (
-              <Text style={styles.error}>{mobile_numberError}</Text>
-            )}
+              <Text style={styles.errorText}>{mobile_numberError}</Text>
+            )} */}
 
             <TextInput
               placeholderTextColor="gray"
@@ -449,7 +357,7 @@ const RegisterForm = ({ route }) => {
               value={address}
               onChangeText={setAddress}
             />
-            {addressError && <Text style={styles.error}>{addressError}</Text>}
+            {addressError && <Text style={styles.errorText}>{addressError}</Text>}
 
             <TextInput
               placeholderTextColor="gray"
@@ -461,7 +369,7 @@ const RegisterForm = ({ route }) => {
               value={city}
               onChangeText={setCity}
             />
-            {cityError && <Text style={styles.error}>{cityError}</Text>}
+            {cityError && <Text style={styles.errorText}>{cityError}</Text>}
 
             <TextInput
               placeholderTextColor="gray"
@@ -473,7 +381,7 @@ const RegisterForm = ({ route }) => {
               value={state}
               onChangeText={setState}
             />
-            {stateError && <Text style={styles.error}>{stateError}</Text>}
+            {stateError && <Text style={styles.errorText}>{stateError}</Text>}
 
             <TextInput
               placeholderTextColor="gray"
@@ -486,7 +394,7 @@ const RegisterForm = ({ route }) => {
               onChangeText={setPincode}
               keyboardType="numeric"
             />
-            {pincodeError && <Text style={styles.error}>{pincodeError}</Text>}
+            {pincodeError && <Text style={styles.errorText}>{pincodeError}</Text>}
 
             <TextInput
               placeholderTextColor="gray"
@@ -499,7 +407,7 @@ const RegisterForm = ({ route }) => {
               onChangeText={setEducation}
             />
             {educationError && (
-              <Text style={styles.error}>{educationError}</Text>
+              <Text style={styles.errorText}>{educationError}</Text>
             )}
 
             <TextInput
@@ -512,45 +420,43 @@ const RegisterForm = ({ route }) => {
               value={job}
               onChangeText={setJob}
             />
-            {jobError && <Text style={styles.error}>{jobError}</Text>}
+            {jobError && <Text style={styles.errorText}>{jobError}</Text>}
           </View>
 
           <View
             style={[
               styles.inputContainer,
               {
-                shadowColor: maritalStatusError ? '#ff0000' : 'gray',
+                borderColor: maritalStatusError ? '#ff0000' : 'gray',
                 marginBottom: maritalStatusError ? 16 : 0,
               },
             ]}>
-            {/*     <CustomDropDown selectedVillage={locations} selectItems={options} accessibilityLabel="Select Village" placeholder="Select Village" selctedValue={getSelectedvalue} /> */}
             <CustomPersonStatusDropdown selectedVillage={marital_status} accessibilityLabel="Select Marital Status" placeholder="Select Marital Status" selctedValue={getSelectedvalue} />
             {/* <Picker
-            style={[styles.input, { marginTop: maritalStatusError ? 16 : 0 }]}
-            selectedValue={marital_status}
-            onValueChange={itemValue => setMaritalStatus(itemValue)}
-            mode="dropdown"
-            defaultValue="Married"
-            dropdownIconColor="gray">
-            <Picker.Item
-              label={initialLabel}
-              value=""
-              selectedValue
-              enabled={true}
-            />
-            <Picker.Item
-              label={married}
-              value="Married"
-              defaultValue
-            />
-
-            <Picker.Item label={unmarried} value="Unmarried" />
-            <Picker.Item label={widower} value="widower" />
-            <Picker.Item label={widow} value="Widow" />
-            <Picker.Item label={divorcee} value="Divorcee" />
-          </Picker> */}
+              style={[styles.input, { marginTop: maritalStatusError ? 16 : 0 }]}
+              selectedValue={marital_status}
+              onValueChange={itemValue => setMaritalStatus(itemValue)}
+              mode="dropdown"
+              defaultValue="Married"
+              dropdownIconColor="gray">
+              <Picker.Item
+                label={initialLabel}
+                value=""
+                selectedValue
+                enabled={false}
+              />
+              <Picker.Item
+                label={married}
+                value="Married"
+                defaultValue
+              />
+              <Picker.Item label={unmarried} value="Unmarried" />
+              <Picker.Item label={widower} value="Widower" />
+              <Picker.Item label={widow} value="Widow" />
+              <Picker.Item label={widow} value="Widow" />
+            </Picker> */}
             {maritalStatusError && (
-              <Text style={styles.error}>{maritalStatusError}</Text>
+              <Text style={styles.errorText}>{maritalStatusError}</Text>
             )}
           </View>
 
@@ -560,6 +466,7 @@ const RegisterForm = ({ route }) => {
               { shadowColor: genderError ? '#ff0000' : 'gray' },
             ]}>
             <Text style={styles.radioLabel}>{t('chooseyourgender')}</Text>
+
             <View style={styles.radioContainer}>
               <Radio.Group
                 name="gender"
@@ -584,40 +491,35 @@ const RegisterForm = ({ route }) => {
                 <Radio value="other" ml={1} my={1} colorScheme="blue" />
 
               </Radio.Group>
-            </View>
-            {/* <View style={styles.radioContainer}>
-            <Text style={styles.radioLabel}>{t('male')}</Text>
-            <View style={{ borderWidth: 1, borderColor: "red", height: 25, width: 25 }}>
+              {/* <Text style={styles.radioLabel}>{t('male')}</Text>
               <RadioButton
                 value="male"
-                style={{ zIndex: 2 }}
                 status={gender === 'male' ? 'checked' : 'unchecked'}
                 onPress={() => setGender('male')}
                 color="blue"
               />
+
+              <Text style={styles.radioLabel}>{t('female')}</Text>
+              <RadioButton
+                value="female"
+                status={gender === 'female' ? 'checked' : 'unchecked'}
+                onPress={() => setGender('female')}
+                color="blue"
+              />
+
+              <Text style={styles.radioLabel}>{t('other')}</Text>
+              <RadioButton
+                value="other"
+                status={gender === 'other' ? 'checked' : 'unchecked'}
+                onPress={() => setGender('other')}
+                color="blue"
+              /> */}
             </View>
-
-            <Text style={styles.radioLabel}>{t('female')}</Text>
-            <RadioButton
-              value="female"
-              status={gender === 'female' ? 'checked' : 'unchecked'}
-              onPress={() => setGender('female')}
-              color="blue"
-            />
-
-            <Text style={styles.radioLabel}>{t('other')}</Text>
-            <RadioButton
-              value="other"
-              status={gender === 'other' ? 'checked' : 'unchecked'}
-              onPress={() => setGender('other')}
-              color="blue"
-            />
-          </View> */}
           </View>
-          {genderError && <Text style={styles.error}>{genderError}</Text>}
+          {genderError && <Text style={styles.errorText}>{genderError}</Text>}
 
-          <Pressable style={styles.button} onPress={handleRegister}>
-            <Text style={styles.btntext}> Save </Text>
+          <Pressable style={styles.button} onPress={handleUpdate}>
+            <Text style={styles.btntext}> {t('update')} </Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -627,34 +529,70 @@ const RegisterForm = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: '100%',
   },
-
-  childContainer: {
-    padding: 16,
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginBottom: 5,
   },
-
-  title: {
+  mainTitle: {
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 16,
+    paddingVertical: 10,
     color: '#515151',
     textTransform: 'uppercase',
   },
 
-  image: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 10,
-    borderRadius: 6,
-    borderColor: 'gray',
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'gray',
+    textTransform: 'uppercase',
+  },
+
+  bday: {
+    flexDirection: 'row',
+    padding: 10,
     borderWidth: 1,
-    paddingVertical: 1,
+    borderColor: 'gray',
+    height: 40,
+    borderWidth: 1,
+    marginBottom: 16,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+  },
+
+  bdaypicker: {
+    flexBasis: '70%',
+  },
+  bdayText: {
+    flexBasis: '30%',
+    color: 'gray',
+  },
+
+  dobbtn: {
+    color: 'red',
+    backgroundColor: 'red',
+    marginBottom: 50,
+  },
+
+  header: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+  },
+
+  btntext: {
+    color: 'white',
+    fontSize: 20,
+    textTransform: 'uppercase',
   },
 
   input: {
-    // borderWidth: 1,
     elevation: 5,
     backgroundColor: '#fff',
     marginTop: 16,
@@ -664,17 +602,14 @@ const styles = StyleSheet.create({
     height: 50,
   },
 
-  inputContainer: {
-    height: 45,
-    // borderWidth: 1,
-    elevation: 5,
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    marginTop: 16,
-    justifyContent: 'center',
-    overflow: 'hidden'
+  btngroup: {
+    flex: 1,
+    flexDirection: 'row',
+    marginVertical: 10,
   },
-
+  childContainer: {
+    padding: 16,
+  },
   button: {
     height: 50,
     backgroundColor: '#00a9ff',
@@ -690,8 +625,39 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     textTransform: 'uppercase',
+    fontWeight: 'bold',
   },
 
+  removebtn: {
+    height: 40,
+    width: '15%',
+    borderRadius: 6,
+    backgroundColor: 'red',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
+  },
+
+  removetext: {
+    color: 'white',
+    fontSize: 20,
+    textTransform: 'capitalize',
+  },
+
+  inputContainer: {
+    height: 50,
+    elevation: 5,
+    // borderWidth: 1,
+    // borderColor: 'gray',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    // marginBottom: 16,
+    justifyContent: 'center',
+    marginTop: 20,
+    overflow: 'hidden'
+    // marginHorizontal: 15,
+  },
   gender: {
     display: 'flex',
     flexDirection: 'column',
@@ -706,22 +672,13 @@ const styles = StyleSheet.create({
   },
 
   radioContainer: {
-    display: "flex",
     flexDirection: 'row',
     alignItems: 'center',
   },
 
   radioLabel: {
-    marginLeft: 5,
+    marginLeft: 6,
     color: 'black',
   },
-
-  error: {
-    color: '#ff0000',
-    fontSize: 15,
-    textAlign: 'right',
-    paddingRight: 6,
-  },
 });
-
-export default RegisterForm;
+export default EditMainDetails;

@@ -1,22 +1,17 @@
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
-  Image,
   TouchableOpacity,
-  Platform,
-  Button,
-  ActivityIndicator,
+  View
 } from 'react-native';
-
-import React, { useState, useEffect } from 'react';
-import { IMAGE_URL } from '@env';
-import AgeCount from '../component/AgeCount';
-import moment from 'moment';
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons';
-import api from '../context/api';
-import { useTranslation, initReactI18next } from 'react-i18next';
+import AgeCount from '../component/AgeCount';
+import api from '../utils/api';
 
 const FamilyList = ({ navigation, route }) => {
   const { userId } = route.params;
@@ -47,6 +42,7 @@ const FamilyList = ({ navigation, route }) => {
         const data = response.data;
         setChildData(response.data.allUser);
         setmainData(response.data.User);
+        console.log(mainData[0], "mainData");
         setVillageData(response.data.villageData);
         setIsLoading(false);
       } else {
@@ -70,13 +66,13 @@ const FamilyList = ({ navigation, route }) => {
               <Text style={styles.mainName}>
                 {mainData[0]?.firstname} {mainData[0]?.lastname}
               </Text>
-{/* 
+
               <View style={styles.row}>
                 <Text style={styles.Mainlabel}>{t('mobile')} : </Text>
                 <Text style={styles.mainDetails}>
                   {mainData[0]?.mobile_number}
                 </Text>
-              </View> */}
+              </View>
 
               <View style={styles.row}>
                 <Text style={styles.Mainlabel}>{t('dateofbirth')} : </Text>
@@ -261,7 +257,7 @@ const styles = StyleSheet.create({
   mainName: {
     color: 'black',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginBottom: 4,
     textTransform: 'capitalize',
     paddingVertical: 5,

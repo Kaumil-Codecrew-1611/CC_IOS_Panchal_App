@@ -11,6 +11,7 @@ import {
     Linking,
     Pressable,
     ScrollView,
+    Platform,
 } from 'react-native';
 import api from '../context/api';
 
@@ -39,7 +40,9 @@ export default function LoginScreen({ route }) {
     console.log(userId, 'userId')
 
     useEffect(() => {
-        GetFCMToken();
+        if (Platform.OS === 'android') {
+            GetFCMToken();
+        }
     })
     const GetFCMToken = async () => {
         try {
